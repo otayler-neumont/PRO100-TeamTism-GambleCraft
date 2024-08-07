@@ -246,3 +246,33 @@ run
 # Files from Forge MDK
 forge*changelog.txt
 
+# Created by https://www.toptal.com/developers/gitignore/api/gradle,forgegradle,intellij
+# Edit at https://www.toptal.com/developers/gitignore?templates=gradle,forgegradle,intellij
+
+### ForgeGradle ###
+# Minecraft client/server files
+run/
+
+### Gradle ###
+**/build/
+!src/**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Avoid ignore Gradle wrappper properties
+!gradle-wrapper.properties
+
+# Cache of project
+.gradletasknamecache
+
+### Gradle Patch ###
+# Java heap dump
+*.hprof
+
+# End of https://www.toptal.com/developers/gitignore/api/gradle,forgegradle,intellij
+
+
