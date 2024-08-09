@@ -1,0 +1,6 @@
+{
+  "block.gamblecraft.slot_machine_block": "Slot Machine",
+  "block.gamblecraft.slot_machine_block_item": "Slot Machine",
+  "item.gamblecraft.edible_slot_machine": "yummers",
+  "itemGroup.gamblecraft.gambling_tab": "gambling"
+}

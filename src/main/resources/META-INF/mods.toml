@@ -6,7 +6,7 @@ showAsResourcePack=false
 [[mods]]
 modId="gamblecraft"
 version="0.0.1"
-displayName="GamebleCraft"
+displayName="GambleCraft"
 logoFile="logo.png" # this doesnt even exist lol
 authors="we love money"
 description='''SLOTS! BIG! MONEY!!!'''
