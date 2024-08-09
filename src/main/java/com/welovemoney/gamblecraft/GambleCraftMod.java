@@ -1,13 +1,11 @@
 package com.welovemoney.gamblecraft;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.advancements.critereon.PlayerInteractTrigger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -15,7 +13,10 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -111,6 +112,20 @@ public class GambleCraftMod
     {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+    }
+
+    @SubscribeEvent
+    public void onBlockClick(PlayerInteractEvent.RightClickBlock event){
+        event.setUseBlock(Event.Result.ALLOW);
+
+        ItemStack heldItem = event.getItemStack();
+        if(heldItem.getItem().toString().equals("diamond")){
+            heldItem.setCount(heldItem.getCount() - 1);
+        }
+    }
+
+    @SubscribeEvent
+    public void someTestingShit(BlockEvent event){
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
