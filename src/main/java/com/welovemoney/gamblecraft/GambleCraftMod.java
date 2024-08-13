@@ -124,21 +124,6 @@ public class GambleCraftMod
         LOGGER.info("HELLO from server starting");
     }
 
-    @SubscribeEvent
-    public void onBlockClick(PlayerInteractEvent.RightClickBlock event){
-        event.setUseBlock(Event.Result.ALLOW);
-
-        ItemStack heldItem = event.getItemStack();
-        if(heldItem.getItem().toString().equals("diamond")){
-            heldItem.setCount(heldItem.getCount() - 1);
-        }
-    }
-
-    @SubscribeEvent
-    public void someTestingShit(BlockEvent event){
-    }
-    public void onSlotsClick(PlayerInteractEvent.RightClickBlock clickBlock){}
-
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents
