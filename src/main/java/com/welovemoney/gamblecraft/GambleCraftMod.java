@@ -50,7 +50,7 @@ public class GambleCraftMod
 
     // Creates a new Block with the id "gamblecraft:slots_block", combining the namespace and path
     //public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("example_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)));
-    public static final RegistryObject<Block> SLOTS_BLOCK = BLOCKS.register("slots_block", () -> new SlotsBlock(BlockBehaviour.Properties.of().destroyTime(3)));
+    public static final RegistryObject<Block> SLOTS_BLOCK = BLOCKS.register("slots_block", () -> new SlotMachineBlock(BlockBehaviour.Properties.of().destroyTime(3)));
     // Creates a new BlockItem with the id "gamblecraft:slots_block", combining the namespace and path
     //public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("example_bloc", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<Item> SLOTS_ITEM = ITEMS.register("slot_block_item", () -> new BlockItem(SLOTS_BLOCK.get(), new Item.Properties()));
