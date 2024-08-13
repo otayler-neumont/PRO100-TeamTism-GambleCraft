@@ -238,6 +238,12 @@ out
 # gradle
 build
 .gradle
+.gradle/8.8/checksums/checksums.lock
+.gradle/8.8/checksums/md5-checksums.Bin
+.gradle/8.8/checksums/sha1-checksums.Bin
+.gradle/8.8/executionHistory/executionHistory.lock
+.gradle/8.8/fileHashes/fileHashes.lock
+.gradle/buildOutputCleanup/buildOutputCleanup.lock
 
 # other
 eclipse
