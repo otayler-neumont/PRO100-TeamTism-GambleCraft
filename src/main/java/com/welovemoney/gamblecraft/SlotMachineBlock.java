@@ -22,8 +22,8 @@ import org.jetbrains.annotations.Nullable;
 import org.openjdk.nashorn.internal.objects.annotations.Function;
 import org.spongepowered.asm.mixin.Implements;
 
-public class SlotsBlock extends BaseEntityBlock implements EntityBlock{
-    public SlotsBlock(Properties prop) {
+public class SlotMachineBlock extends BaseEntityBlock implements EntityBlock{
+    public SlotMachineBlock(Properties prop) {
         super(prop);
     }
 
