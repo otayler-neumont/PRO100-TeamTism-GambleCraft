@@ -58,11 +58,27 @@ public class SlotMachineBlock extends Block implements EntityBlock{
 
             if (!heldItem.isEmpty()) {
                 System.out.println("Item Held: " + heldItem);
-                heldItem.shrink(1);
-
-                ItemStack itemStack = new ItemStack(Items.CARROT);
-                dropItem(level,pos,itemStack);
-
+                ItemStack carrot = new ItemStack(Items.CARROT);
+                switch (heldItem.getItem().toString()){
+                    case("gold_ingot") : {
+                        System.out.println("Dropping Carrot");
+                        dropItem(level,pos,carrot);
+                        heldItem.shrink(1);
+                        break;
+                    }
+                    case("diamond") : {
+                        System.out.println("Dropping Carrots");
+                        dropItem(level,pos,carrot);
+                        heldItem.shrink(1);
+                        break;
+                    }
+                    case("emerald") : {
+                        System.out.println("Dropping a Carrot");
+                        dropItem(level,pos,carrot);
+                        heldItem.shrink(1);
+                        break;
+                    } default: break;
+                }
             }
         }
         return InteractionResult.SUCCESS;
