@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "gamblecraft:block/slot_machine_block" }
+  }
+}
