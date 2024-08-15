@@ -1,6 +1,12 @@
 {
-  "parent": "block/cube_all",
+  "parent": "block/cube",
   "textures": {
-    "all": "gamblecraft:block/slot_machine_block"
+    "down": "gamblecraft:block/slot_machine_block_bottom",
+    "up": "gamblecraft:block/slot_machine_block_top",
+    "north": "gamblecraft:block/slot_machine_block_front",
+    "east": "gamblecraft:block/slot_machine_block_left",
+    "south": "gamblecraft:block/slot_machine_block_back",
+    "west": "gamblecraft:block/slot_machine_block_right",
+    "particle": "block/lapis_block"
   }
 }
