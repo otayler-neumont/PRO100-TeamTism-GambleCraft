@@ -57,18 +57,18 @@ public class SlotMachineBlock extends Block implements EntityBlock{
                     case("gold_ingot") : {
                         rollResult = SlotSpinLogic.rollOne(random);
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
+                        heldItem.shrink(1);
                         items = SlotReward.goldRoleReward(rollResult, player, level, hit, hand, state);
                         dropItem(level, pos, items);
-                        heldItem.shrink(1);
                         break;
                     }
                     case("diamond") : {
                     /////////////// Change this /////////////////////////////
                         rollResult = SlotSpinLogic.rollOne(random);
-                       // sendMessageToChat((ServerPlayer) player, rollResult.toString());
-                        items = SlotReward.diamondRoleReward(Result.TRIPLE_DIAMOND, player, level, hit, hand, state);
-                        dropItem(level, pos, items);
+                        sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
+                        items = SlotReward.diamondRoleReward(rollResult, player, level, hit, hand, state);
+                        dropItem(level, pos, items);
                         break;
                         ////////////////////////////////////////////////////////////
                     }
@@ -76,9 +76,10 @@ public class SlotMachineBlock extends Block implements EntityBlock{
                         rollResult = SlotSpinLogic.rollOne(random);
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         items = SlotReward.emeraldRoleReward(rollResult);
-                        assert items != null;
-                        dropItem(level,pos,items);
                         heldItem.shrink(1);
+                        assert items != null;
+
+                        dropItem(level,pos,items);
                         break;
                     } default: break;
                 }
