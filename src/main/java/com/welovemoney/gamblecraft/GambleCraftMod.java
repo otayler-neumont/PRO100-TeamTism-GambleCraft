@@ -47,7 +47,7 @@ public class GambleCraftMod {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
     // Creates a new Block with the id "gamblecraft:slot_machine_block", combining the namespace and path
-    public static final RegistryObject<Block> SLOT_MACHINE_BLOCK = BLOCKS.register("slot_machine_block", () -> new SlotMachineBlock(BlockBehaviour.Properties.of().destroyTime(3)));
+    public static final RegistryObject<Block> SLOT_MACHINE_BLOCK = BLOCKS.register("slot_machine_block", () -> new SlotMachineBlock(BlockBehaviour.Properties.of().destroyTime(3).requiresCorrectToolForDrops()));
 
     // Creates a new BlockItem with the id "gamblecraft:slot_machine_block_item", combining the namespace and path
     public static final RegistryObject<Item> SLOT_MACHINE_BLOCK_ITEM = ITEMS.register("slot_machine_block_item", () -> new BlockItem(SLOT_MACHINE_BLOCK.get(), new Item.Properties()));
