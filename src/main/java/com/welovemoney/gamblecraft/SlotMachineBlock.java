@@ -2,33 +2,40 @@ package com.welovemoney.gamblecraft;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.OutgoingChatMessage;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.block.Block;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+public class SlotMachineBlock extends Block implements EntityBlock {
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-public class SlotMachineBlock extends Block implements EntityBlock{
     public SlotMachineBlock(Properties prop) {
         super(prop);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(FACING);
     }
 
     @Nullable
@@ -43,6 +50,12 @@ public class SlotMachineBlock extends Block implements EntityBlock{
     }
 
     @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        Direction direction = context.getHorizontalDirection().getOpposite();
+        return this.defaultBlockState().setValue(FACING, direction);
+    }
+
+    @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if(!level.isClientSide) {
             ItemStack heldItem = player.getItemInHand(hand);
@@ -50,38 +63,38 @@ public class SlotMachineBlock extends Block implements EntityBlock{
             Result rollResult = null;
             ArrayList<ItemStack> items = null;
 
-
             if (!heldItem.isEmpty()) {
-
                 switch (heldItem.getItem().toString()){
-                    case("gold_ingot") : {
+                    case("gold_ingot"): {
                         rollResult = SlotSpinLogic.rollOne(random);
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.goldRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items);
+                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
                         break;
                     }
-                    case("diamond") : {
-                    /////////////// Change this /////////////////////////////
+                    case("diamond"): {
+                        /////////////// Change this /////////////////////////////
                         rollResult = SlotSpinLogic.rollOne(random);
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.diamondRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items);
+                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
                         break;
                         ////////////////////////////////////////////////////////////
                     }
-                    case("emerald") : {
+                    case("emerald"): {
                         rollResult = SlotSpinLogic.rollOne(random);
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         items = SlotReward.emeraldRoleReward(rollResult);
                         heldItem.shrink(1);
                         assert items != null;
 
-                        dropItem(level,pos,items);
+                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
                         break;
-                    } default: break;
+                    }
+                    default:
+                        break;
                 }
             }
         }
@@ -116,12 +129,6 @@ public class SlotMachineBlock extends Block implements EntityBlock{
             case EAST:
                 velocityX = 0.2;
                 break;
-            case UP:
-                velocityY = 0.4;
-                break;
-            case DOWN:
-                velocityY = -0.4;
-                break;
             default:
                 break;
         }
@@ -137,7 +144,6 @@ public class SlotMachineBlock extends Block implements EntityBlock{
 
     private void dropItem(Level level, BlockPos pos, ItemStack item) {
         // Create an ItemEntity and set its position
-
         ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, item);
         itemEntity.setDefaultPickUpDelay();
         level.addFreshEntity(itemEntity);
