@@ -70,7 +70,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.goldRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
+                        dropItem(level, pos, items, state.getValue(BlockStateProperties.FACING));
                         break;
                     }
                     case("diamond"): {
@@ -79,7 +79,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.diamondRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
+                        dropItem(level, pos, items, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
                         break;
                         ////////////////////////////////////////////////////////////
                     }
@@ -90,7 +90,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                         heldItem.shrink(1);
                         assert items != null;
 
-                        dropItem(level, pos, items, this.defaultBlockState().getValue(FACING));
+                        dropItem(level, pos, items, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
                         break;
                     }
                     default:
@@ -101,53 +101,20 @@ public class SlotMachineBlock extends Block implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    private void dropItem(Level level, BlockPos pos, ArrayList<ItemStack> items) {
-        // Create an ItemEntity and set its position
-        for(ItemStack stack:items) {
-            ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-            itemEntity.setDefaultPickUpDelay();
-            level.addFreshEntity(itemEntity);
-        }
-    }
-    private void dropItem(Level level, BlockPos pos, ArrayList<ItemStack> items, Direction direction) {
+    private void dropItem(Level level, BlockPos pos, ArrayList<ItemStack> items, Direction blockDirection) {
         // Velocity factors based on direction
-        double velocityX = 0.0;
-        double velocityY = 0.2; // Add a bit of upward motion
-        double velocityZ = 0.0;
-
-        // Adjust velocity based on the direction
-        switch (direction) {
-            case NORTH:
-                velocityZ = -0.2;
-                break;
-            case SOUTH:
-                velocityZ = 0.2;
-                break;
-            case WEST:
-                velocityX = -0.2;
-                break;
-            case EAST:
-                velocityX = 0.2;
-                break;
-            default:
-                break;
-        }
+        double velocity = 0.3;
+        double posX = pos.getX() + 0.5 + 0.6 * blockDirection.getStepX();
+        double posY = pos.getY() + 0.5;
+        double posZ = pos.getZ() + 0.5 + 0.6 * blockDirection.getStepZ();
 
         // Create an ItemEntity and set its position
         for(ItemStack stack:items) {
-            ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-            itemEntity.setDeltaMovement(velocityX, velocityY, velocityZ);
+            ItemEntity itemEntity = new ItemEntity(level, posX, posY, posZ, stack);
+            itemEntity.setDeltaMovement(blockDirection.getStepX() * velocity, 0.1, blockDirection.getStepZ() * velocity);
             itemEntity.setDefaultPickUpDelay();
             level.addFreshEntity(itemEntity);
         }
-    }
-
-    private void dropItem(Level level, BlockPos pos, ItemStack item) {
-        // Create an ItemEntity and set its position
-        ItemEntity itemEntity = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, item);
-        itemEntity.setDefaultPickUpDelay();
-        level.addFreshEntity(itemEntity);
-
     }
 
     public void sendMessageToChat(ServerPlayer player, String message) {
