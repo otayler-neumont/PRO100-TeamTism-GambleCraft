@@ -6,6 +6,10 @@ public class SlotSpinLogic {
     private static final String[] REEL_SYMBOLS = {"Potato", "Apple", "Diamond", "Nether Star", "Wild"};
     private static final int[] SYMBOL_WEIGHTS = {40, 30,  16, 6, 8}; // Adjusted weights to simulate payout percentage
     private static final int REEL_COUNT = 3;
+    private static String[] slotSymbols = new String[REEL_COUNT];
+    public static String[] getReelSymbols() {
+        return slotSymbols;
+    }
 
     public static Result toEnum(String[] result)
     {
@@ -52,6 +56,9 @@ public class SlotSpinLogic {
         for (int i = 0; i < REEL_COUNT; i++) {
             reels[i] = spinReel(random);
 
+        }
+        for (int i = 0; i < REEL_COUNT; i++) {
+            slotSymbols[i] = reels[i];
         }
 
         // Display the result

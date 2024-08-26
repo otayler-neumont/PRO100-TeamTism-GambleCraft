@@ -1,0 +1,6 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "north": "gamblecraft:block/frame_Potato_Netherite_NetherStar"
+    }
+}
