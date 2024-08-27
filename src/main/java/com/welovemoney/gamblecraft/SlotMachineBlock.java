@@ -23,6 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.block.Block;
 
+import java.sql.Time;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -122,53 +123,47 @@ public class SlotMachineBlock extends Block implements EntityBlock {
         return InteractionResult.SUCCESS;
     }
     public Dictionary<String,Integer> slotValues = new Hashtable<>();
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results)
-    {
+    private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results) {
 
-        slotValues.put("Apple",1);
-        slotValues.put("Diamond",2);
-        slotValues.put("Netherite",3);
-        slotValues.put("NetherStar",4);
-        slotValues.put("Potato",5);
+        slotValues.put("Apple", 1);
+        slotValues.put("Diamond", 2);
+        slotValues.put("Netherite", 3);
+        slotValues.put("NetherStar", 4);
+        slotValues.put("Potato", 5);
 
-        AtomicInteger timePassed = new AtomicInteger();
+
         int firstSlot = slotValues.get(results[0]);
         int secondSlot = slotValues.get(results[1]);
         int thirdSlot = slotValues.get(results[2]);
         Random rand = new Random();
 
-        scheduler.scheduleAtFixedRate(() -> {
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            int timePassed = 0;
+            @Override
+            public void run() {
                 int newTextureIndex;
 
 
+                timePassed+= 250;
+
+                if (timePassed >= 6000) {
+                    newTextureIndex = (((firstSlot - 1) * 25) + 1) + ((secondSlot - 1) * 5) + (thirdSlot - 1);
+                    timePassed = 0;
+                    this.cancel();
 
 
-                timePassed.addAndGet(250);
-
-                if(timePassed.get() >=6000)
-                {
-                    newTextureIndex = (((firstSlot-1)*25)+1) + ((secondSlot-1)*5) + (thirdSlot-1);
-                    scheduler.shutdownNow();
+                } else if (timePassed >= 5000) {
+                    newTextureIndex = (((firstSlot - 1) * 25) + 1) + ((secondSlot - 1) * 5) + rand.nextInt(5);
 
 
-                }
-                else if(timePassed.get() >=5000)
-                {
-                    newTextureIndex = (((firstSlot-1)*25)+1) + ((secondSlot-1)*5) + rand.nextInt(5);
-
-
-                }
-                else if(timePassed.get() >= 4000)
-                {
-                    newTextureIndex = (firstSlot-1)*25 + 1 + rand.nextInt(25);
+                } else if (timePassed >= 4000) {
+                    newTextureIndex = (firstSlot - 1) * 25 + 1 + rand.nextInt(25);
                     System.out.println("four seconds reached");
 
 
-                }
-                else
-                {
+                } else {
                     newTextureIndex = 1 + rand.nextInt(125);
                     System.out.println("Changed");
 
@@ -179,7 +174,10 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                 level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE); // Update the block in the world
                 level.sendBlockUpdated(pos, state, newState, 3);
 
-            }, 0, 250, TimeUnit.MILLISECONDS);
+            }
+        };
+        timer.scheduleAtFixedRate(task, 0, 250);
+
     }
 
     private void dropItem(Level level, BlockPos pos, ArrayList<ItemStack> items) {

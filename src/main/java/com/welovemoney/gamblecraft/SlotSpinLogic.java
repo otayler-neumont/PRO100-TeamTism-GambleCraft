@@ -13,9 +13,6 @@ public class SlotSpinLogic {
     // Initialize the array to avoid null references
     private static String[] slotSymbols = new String[REEL_COUNT];
 
-    public static String[] getReelSymbols() {
-        return slotSymbols;
-    }
 
     public static Result toEnum(String[] result) {
         switch (result[0]) {
@@ -61,6 +58,9 @@ public class SlotSpinLogic {
         for (int i = 0; i < REEL_COUNT; i++) {
             reels[i] = spinReel(random);
         }
+        for (int i = 0; i < REEL_COUNT; i++) {
+            System.out.println(reels[i]);
+        }
 
         // Update the slotSymbols array with the new spin result
         slotSymbols = reels.clone();
@@ -78,7 +78,7 @@ public class SlotSpinLogic {
             results = twoOfaKind(reels);
         }
 
-        return Pair.of(toEnum(results), results);
+        return Pair.of(toEnum(results), reels);
     }
 
     private static String spinReel(Random random) {
