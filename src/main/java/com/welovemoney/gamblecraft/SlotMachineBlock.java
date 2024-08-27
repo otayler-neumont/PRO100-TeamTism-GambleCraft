@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 import net.minecraft.world.level.block.Block;
 
@@ -77,8 +78,9 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                 switch (heldItem.getItem().toString()){
                     case("gold_ingot"): {
 
-                        rollResult = SlotSpinLogic.rollOne(random);
-                        runAnimation(level,pos,state);
+                        Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
+                        rollResult = result.getLeft();
+                        runAnimation(level,pos,state, result.getRight());
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.goldRoleReward(rollResult, player, level, hit, hand, state);
@@ -88,8 +90,9 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                     case("diamond"): {
                         /////////////// Change this /////////////////////////////
 
-                        rollResult = SlotSpinLogic.rollOne(random);
-                        runAnimation(level,pos,state);
+                        Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
+                        rollResult = result.getLeft();
+                        runAnimation(level,pos,state, result.getRight());
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.diamondRoleReward(rollResult, player, level, hit, hand, state);
@@ -99,8 +102,10 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                     }
                     case("emerald"): {
 
-                        rollResult = SlotSpinLogic.rollOne(random);
-                        runAnimation(level,pos,state);
+                        Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
+                        rollResult = result.getLeft();
+
+                        runAnimation(level,pos,state, result.getRight());
                         sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         items = SlotReward.emeraldRoleReward(rollResult);
                         heldItem.shrink(1);
@@ -119,7 +124,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
     public Dictionary<String,Integer> slotValues = new Hashtable<>();
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-    private void runAnimation(Level level, BlockPos pos, BlockState state)
+    private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results)
     {
 
         slotValues.put("Apple",1);
@@ -127,23 +132,24 @@ public class SlotMachineBlock extends Block implements EntityBlock {
         slotValues.put("Netherite",3);
         slotValues.put("NetherStar",4);
         slotValues.put("Potato",5);
-        String[] results = SlotSpinLogic.getReelSymbols();
+
         AtomicInteger timePassed = new AtomicInteger();
         int firstSlot = slotValues.get(results[0]);
         int secondSlot = slotValues.get(results[1]);
         int thirdSlot = slotValues.get(results[2]);
+        Random rand = new Random();
 
         scheduler.scheduleAtFixedRate(() -> {
-
-
-
-
-                Random rand = new Random();
-                timePassed.addAndGet(100);
                 int newTextureIndex;
+
+
+
+
+                timePassed.addAndGet(250);
+
                 if(timePassed.get() >=6000)
                 {
-                     newTextureIndex = (((firstSlot-1)*25)+1) + ((secondSlot-1)*5) + (thirdSlot-1);
+                    newTextureIndex = (((firstSlot-1)*25)+1) + ((secondSlot-1)*5) + (thirdSlot-1);
                     scheduler.shutdownNow();
 
 
@@ -157,6 +163,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                 else if(timePassed.get() >= 4000)
                 {
                     newTextureIndex = (firstSlot-1)*25 + 1 + rand.nextInt(25);
+                    System.out.println("four seconds reached");
 
 
                 }
@@ -168,10 +175,11 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                 }
 
                 BlockState newState = state.setValue(SlotMachineBlock.TEXTURE, newTextureIndex);
-                level.setBlock(pos, newState, 3); // Update the block in the world
+                System.out.println(newTextureIndex);
+                level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE); // Update the block in the world
                 level.sendBlockUpdated(pos, state, newState, 3);
 
-            }, 0, 100, TimeUnit.MILLISECONDS);
+            }, 0, 250, TimeUnit.MILLISECONDS);
     }
 
     private void dropItem(Level level, BlockPos pos, ArrayList<ItemStack> items) {
