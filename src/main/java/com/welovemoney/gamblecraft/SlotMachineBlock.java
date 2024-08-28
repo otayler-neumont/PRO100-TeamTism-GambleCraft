@@ -39,6 +39,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
     public SlotMachineBlock(Properties prop) {
         super(prop);
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any().setValue(TEXTURE, 1));
     }
 
 
