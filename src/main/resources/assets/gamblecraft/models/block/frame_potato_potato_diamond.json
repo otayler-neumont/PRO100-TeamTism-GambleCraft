@@ -1,6 +1,12 @@
 {
-    "parent": "item/generated",
+    "parent": "block/cube",
     "textures": {
-        "north": "gamblecraft:block/frame_potato_potato_diamond"
+        "north": "gamblecraft:block/frame_potato_potato_diamond",
+        "down": "gamblecraft:block/slot_machine_block_bottom",
+        "up": "gamblecraft:block/slot_machine_block_top",
+        "east": "gamblecraft:block/slot_machine_block_left",
+        "south": "gamblecraft:block/slot_machine_block_back",
+        "west": "gamblecraft:block/slot_machine_block_right",
+        "particle": "block/stone_bricks"
     }
 }

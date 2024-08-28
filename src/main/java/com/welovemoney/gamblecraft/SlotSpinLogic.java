@@ -6,7 +6,7 @@ import java.sql.Struct;
 import java.util.Random;
 
 public class SlotSpinLogic {
-    private static final String[] REEL_SYMBOLS = {"Potato", "Apple", "Diamond", "Nether Star", "Wild"};
+    private static final String[] REEL_SYMBOLS = {"potato", "apple", "diamond", "netherstar", "netherite"};
     private static final int[] SYMBOL_WEIGHTS = {40, 30, 16, 6, 8}; // Adjusted weights to simulate payout percentage
     private static final int REEL_COUNT = 3;
 
@@ -16,35 +16,35 @@ public class SlotSpinLogic {
 
     public static Result toEnum(String[] result) {
         switch (result[0]) {
-            case "Potato" -> {
+            case "potato" -> {
                 if (result[1].equals("2")) {
                     return Result.DOUBLE_POTATO;
                 } else {
                     return Result.TRIPLE_POTATO;
                 }
             }
-            case "Apple" -> {
+            case "apple" -> {
                 if (result[1].equals("2")) {
                     return Result.DOUBLE_APPLE;
                 } else {
                     return Result.TRIPLE_APPLE;
                 }
             }
-            case "Diamond" -> {
+            case "diamond" -> {
                 if (result[1].equals("2")) {
                     return Result.DOUBLE_DIAMOND;
                 } else {
                     return Result.TRIPLE_DIAMOND;
                 }
             }
-            case "Nether Star" -> {
+            case "netherstar" -> {
                 if (result[1].equals("2")) {
                     return Result.DOUBLE_STAR;
                 } else {
                     return Result.TRIPLE_STAR;
                 }
             }
-            case "Wild" -> {
+            case "netherite" -> {
                 if (result[1].equals("3")) {
                     return Result.TRIPLE_WILD;
                 }
@@ -107,11 +107,11 @@ public class SlotSpinLogic {
             return new String[]{reels[0], "2"};
         } else if (reels[1].equals(reels[2])) {
             return new String[]{reels[1], "2"};
-        } else if (reels[0].equals("Wild")) {
+        } else if (reels[0].equals("netherite")) {
             return new String[]{reels[1], "2"};
-        } else if (reels[1].equals("Wild")) {
+        } else if (reels[1].equals("netherite")) {
             return new String[]{reels[0], "2"};
-        } else if (reels[2].equals("Wild")) {
+        } else if (reels[2].equals("netherite")) {
             return new String[]{reels[1], "2"};
         } else {
             return new String[]{"", ""};
@@ -121,11 +121,11 @@ public class SlotSpinLogic {
     public static String[] threeOfaKind(String[] reels) {
         if (reels[0].equals(reels[1]) && reels[1].equals(reels[2])) {
             return new String[]{reels[0], "3"};
-        } else if (reels[0].equals(reels[1]) && reels[2].equals("Wild")) {
+        } else if (reels[0].equals(reels[1]) && reels[2].equals("netherite")) {
             return new String[]{reels[0], "3"};
-        } else if (reels[0].equals(reels[2]) && reels[1].equals("Wild")) {
+        } else if (reels[0].equals(reels[2]) && reels[1].equals("netherite")) {
             return new String[]{reels[0], "3"};
-        } else if (reels[1].equals(reels[2]) && reels[0].equals("Wild")) {
+        } else if (reels[1].equals(reels[2]) && reels[0].equals("netherite")) {
             return new String[]{reels[1], "3"};
         } else {
             return new String[]{"", ""};

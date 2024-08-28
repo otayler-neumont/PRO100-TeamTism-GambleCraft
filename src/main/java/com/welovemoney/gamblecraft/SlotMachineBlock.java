@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlotMachineBlock extends Block implements EntityBlock {
-    public static final IntegerProperty TEXTURE = IntegerProperty.create("texture", 0, 124);
+    public static IntegerProperty TEXTURE = IntegerProperty.create("texture", 1, 125);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
 
@@ -126,11 +126,11 @@ public class SlotMachineBlock extends Block implements EntityBlock {
 
     private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results) {
 
-        slotValues.put("Apple", 1);
-        slotValues.put("Diamond", 2);
-        slotValues.put("Netherite", 3);
-        slotValues.put("NetherStar", 4);
-        slotValues.put("Potato", 5);
+        slotValues.put("apple", 1);
+        slotValues.put("diamond", 2);
+        slotValues.put("netherite", 3);
+        slotValues.put("netherstar", 4);
+        slotValues.put("potato", 5);
 
 
         int firstSlot = slotValues.get(results[0]);
@@ -149,13 +149,15 @@ public class SlotMachineBlock extends Block implements EntityBlock {
                 timePassed+= 250;
 
                 if (timePassed >= 6000) {
-                    newTextureIndex = (((firstSlot - 1) * 25) + 1) + ((secondSlot - 1) * 5) + (thirdSlot - 1);
+                    newTextureIndex = (((firstSlot - 1) * 25)+1 ) + ((secondSlot - 1) * 5) + (thirdSlot - 1);
+                    System.out.println("its over");
                     timePassed = 0;
                     this.cancel();
 
 
                 } else if (timePassed >= 5000) {
                     newTextureIndex = (((firstSlot - 1) * 25) + 1) + ((secondSlot - 1) * 5) + rand.nextInt(5);
+                    System.out.println("five seconds reached");
 
 
                 } else if (timePassed >= 4000) {
@@ -164,14 +166,19 @@ public class SlotMachineBlock extends Block implements EntityBlock {
 
 
                 } else {
-                    newTextureIndex = 1 + rand.nextInt(125);
+                    newTextureIndex = 1+ rand.nextInt(125);
                     System.out.println("Changed");
 
                 }
 
+                String textureName = SlotMachineTextures.getTexture(newTextureIndex);
+
+
+
                 BlockState newState = state.setValue(SlotMachineBlock.TEXTURE, newTextureIndex);
+
                 System.out.println(newTextureIndex);
-                level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE); // Update the block in the world
+                level.setBlock(pos, newState, 3); // Update the block in the world
                 level.sendBlockUpdated(pos, state, newState, 3);
 
             }
