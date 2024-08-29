@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlotMachineBlock extends Block implements EntityBlock {
+    boolean isRunning = false;
     public static IntegerProperty TEXTURE = IntegerProperty.create("texture", 1, 125);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -70,7 +72,7 @@ public class SlotMachineBlock extends Block implements EntityBlock {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if(!level.isClientSide) {
+        if(!level.isClientSide && !isRunning) {
             ItemStack heldItem = player.getItemInHand(hand);
             Random random = new Random();
             Result rollResult = null;
@@ -79,41 +81,38 @@ public class SlotMachineBlock extends Block implements EntityBlock {
             if (!heldItem.isEmpty()) {
                 switch (heldItem.getItem().toString()){
                     case("gold_ingot"): {
-
+                        isRunning = true;
                         Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
                         rollResult = result.getLeft();
-                        runAnimation(level,pos,state, result.getRight());
-                        sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.goldRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items, state.getValue(BlockStateProperties.FACING));
+                        level.playSound(null, pos, ModSounds.SLOT_MACHINE_SPIN.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        runAnimation(level,pos,state, result.getRight(),items);
+
                         break;
                     }
                     case("diamond"): {
-                        /////////////// Change this /////////////////////////////
-
+                        isRunning = true;
                         Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
                         rollResult = result.getLeft();
-                        runAnimation(level,pos,state, result.getRight());
-                        sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         heldItem.shrink(1);
                         items = SlotReward.diamondRoleReward(rollResult, player, level, hit, hand, state);
-                        dropItem(level, pos, items, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+                        level.playSound(null, pos, ModSounds.SLOT_MACHINE_SPIN.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        runAnimation(level,pos,state, result.getRight(),items);
+
                         break;
-                        ////////////////////////////////////////////////////////////
                     }
                     case("emerald"): {
-
+                        isRunning = true;
                         Pair<Result, String[]> result = SlotSpinLogic.rollOne(new Random());
                         rollResult = result.getLeft();
-
-                        runAnimation(level,pos,state, result.getRight());
-                        sendMessageToChat((ServerPlayer) player, rollResult.toString());
                         items = SlotReward.emeraldRoleReward(rollResult);
                         heldItem.shrink(1);
                         assert items != null;
+                        level.playSound(null, pos, ModSounds.SLOT_MACHINE_SPIN.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        runAnimation(level,pos,state, result.getRight(),items);
 
-                        dropItem(level, pos, items, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
+
                         break;
                     }
                     default:
@@ -123,9 +122,11 @@ public class SlotMachineBlock extends Block implements EntityBlock {
         }
         return InteractionResult.SUCCESS;
     }
+
+
     public Dictionary<String,Integer> slotValues = new Hashtable<>();
 
-    private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results) {
+    private void runAnimation(Level level, BlockPos pos, BlockState state, String[] results, ArrayList<ItemStack> items) {
 
         slotValues.put("apple", 1);
         slotValues.put("diamond", 2);
@@ -146,22 +147,23 @@ public class SlotMachineBlock extends Block implements EntityBlock {
             public void run() {
                 int newTextureIndex;
 
-
                 timePassed+= 250;
 
-                if (timePassed >= 6000) {
+                if (timePassed >= 6000) { //sets last slot
                     newTextureIndex = (((firstSlot - 1) * 25)+1 ) + ((secondSlot - 1) * 5) + (thirdSlot - 1);
                     System.out.println("its over");
                     timePassed = 0;
+                    isRunning = false;
+                    dropItem(level, pos, items, state.getValue(BlockStateProperties.HORIZONTAL_FACING));
                     this.cancel();
 
 
-                } else if (timePassed >= 5000) {
+                } else if (timePassed >= 5000) { //sets middle slot
                     newTextureIndex = (((firstSlot - 1) * 25) + 1) + ((secondSlot - 1) * 5) + rand.nextInt(5);
                     System.out.println("five seconds reached");
 
 
-                } else if (timePassed >= 4000) {
+                } else if (timePassed >= 4000) {//sets first slot
                     newTextureIndex = (firstSlot - 1) * 25 + 1 + rand.nextInt(25);
                     System.out.println("four seconds reached");
 
